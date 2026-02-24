@@ -27,121 +27,8 @@
   }
 
   /* REGISTER SCREEN */
-  #registerScreen {
-    width: 100%;
-    max-width: 420px;
-    animation: fadeIn 0.5s ease;
-  }
-
+  #registerScreen { width: 100%; max-width: 420px; animation: fadeIn 0.5s ease; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-
-  /* ── BOTTOM NAV ── */
-  .bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: white;
-    border-top: 2px solid #f0e8ff;
-    display: flex;
-    z-index: 200;
-    box-shadow: 0 -4px 20px rgba(107,45,139,.1);
-  }
-  .bottom-nav-item {
-    flex: 1; display: flex; flex-direction: column; align-items: center;
-    padding: 10px 0 8px; cursor: pointer; transition: all .2s;
-    border: none; background: transparent; font-family: 'DM Sans', sans-serif;
-  }
-  .bottom-nav-item .nav-icon { font-size: 22px; margin-bottom: 3px; }
-  .bottom-nav-item .nav-label { font-size: 10px; font-weight: 600; color: #aaa; letter-spacing: .3px; }
-  .bottom-nav-item.active .nav-label { color: var(--purple); }
-  .bottom-nav-item.active .nav-icon { transform: scale(1.15); }
-
-  /* ── HEADER FORNADA ── */
-  .fornada-header {
-    background: linear-gradient(135deg, var(--purple-dark), var(--purple));
-    padding: 14px 16px;
-    text-align: center;
-    position: relative;
-  }
-  .fornada-header-text {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 600;
-    color: rgba(255,255,255,.85);
-    line-height: 1.4;
-  }
-  .fornada-header-text strong { color: var(--gold); }
-  .fornada-pulse {
-    display: inline-block;
-    width: 8px; height: 8px;
-    background: #43a047; border-radius: 50%;
-    margin-right: 6px;
-    animation: blink 1.4s ease-in-out infinite;
-  }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-  /* ── CARDÁPIO SCREEN ── */
-  #cardapioScreen {
-    width: 100%; max-width: 480px;
-    padding-bottom: 100px;
-    animation: fadeIn .5s ease;
-  }
-  #cardapioScreen.hidden { display: none; }
-
-  .cardapio-section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 17px; font-weight: 700;
-    color: var(--purple-dark);
-    margin: 20px 16px 10px;
-  }
-
-  .empada-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 0 12px;
-  }
-  .empada-card {
-    background: white;
-    border-radius: 18px;
-    padding: 14px;
-    box-shadow: 0 3px 14px rgba(107,45,139,.1);
-    border: 2px solid transparent;
-    transition: all .2s;
-    position: relative;
-  }
-  .empada-card.esgotado { opacity: .55; pointer-events: none; }
-  .empada-card.selecionado { border-color: var(--purple); background: #faf5ff; }
-  .empada-emoji { font-size: 32px; margin-bottom: 8px; display: block; }
-  .empada-nome { font-size: 13px; font-weight: 700; color: #222; margin-bottom: 4px; line-height: 1.2; }
-  .empada-preco { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--purple); }
-
-  /* Qty selector */
-  .qty-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
-  .qty-btn {
-    width: 28px; height: 28px; border-radius: 8px; border: 2px solid #e0d5f0;
-    background: white; font-size: 16px; font-weight: 700; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all .2s; color: var(--purple);
-  }
-  .qty-btn:hover { background: var(--purple); color: white; border-color: var(--purple); }
-  .qty-num { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--purple); min-width: 24px; text-align: center; }
-
-  /* Carrinho flutuante */
-  .cart-bar {
-    position: fixed; bottom: 62px; left: 50%; transform: translateX(-50%);
-    width: calc(100% - 24px); max-width: 460px;
-    background: var(--purple-dark);
-    border-radius: 18px; padding: 14px 18px;
-    display: flex; align-items: center; justify-content: space-between;
-    box-shadow: 0 8px 32px rgba(74,29,98,.4);
-    z-index: 150; transition: all .3s;
-  }
-  .cart-bar.hidden { transform: translateX(-50%) translateY(140px); opacity: 0; pointer-events: none; }
-  .cart-bar-total { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--gold); }
-  .cart-bar-btn {
-    background: var(--gold); color: var(--purple-dark);
-    border: none; border-radius: 12px;
-    padding: 10px 16px; font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 700; cursor: pointer;
-  }
 
   .brand-header { text-align: center; margin-bottom: 24px; }
   .mascot {
@@ -152,37 +39,57 @@
   }
   .brand-name { font-family: 'Playfair Display', serif; font-size: 36px; color: var(--purple-dark); font-weight: 900; }
   .brand-name span { font-style: italic; color: var(--purple); }
+  
   .register-card { background: white; border-radius: 24px; padding: 28px 24px; box-shadow: 0 12px 40px rgba(74,29,98,0.2); }
   .field { margin-bottom: 12px; }
   .field label { display: block; font-size: 11px; font-weight: 600; color: var(--purple); margin-bottom: 4px; }
-  .field input { width: 100%; padding: 12px 14px; border: 2px solid #e8dff5; border-radius: 12px; font-family: 'DM Sans', sans-serif; }
+  .field input { width: 100%; padding: 12px 14px; border: 2px solid #e8dff5; border-radius: 12px; font-family: 'DM Sans', sans-serif; outline: none; }
+  
   .btn-register {
-    width: 100%; padding: 14px; background: var(--purple); color: white; border: none;
-    border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700;
-    cursor: pointer; margin-top: 16px; transition: background 0.2s;
+    width: 100%; padding: 16px; background: var(--purple); color: white; border: none;
+    border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 10px;
   }
 
+  /* FORNADA HEADER */
+  .fornada-header { background: linear-gradient(135deg, var(--purple-dark), var(--purple)); padding: 14px; text-align: center; }
+  .fornada-header-text { font-size: 13px; color: white; font-weight: 600; }
+  .fornada-pulse { display: inline-block; width: 8px; height: 8px; background: #43a047; border-radius: 50%; margin-right: 6px; animation: blink 1.4s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* CARDÁPIO */
+  #cardapioScreen { width: 100%; max-width: 480px; padding-bottom: 100px; }
+  .cardapio-section-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--purple-dark); margin: 20px 16px 10px; }
+  .empada-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px; }
+  .empada-card { background: white; border-radius: 18px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
+  .empada-emoji { font-size: 30px; margin-bottom: 8px; display: block; }
+  .empada-nome { font-size: 14px; font-weight: 700; color: #333; }
+  .empada-preco { color: var(--purple); font-weight: 700; margin-top: 5px; display: block; }
+
   /* FIDELITY CARD */
-  #cardScreen { width: 100%; max-width: 460px; display: none; animation: fadeIn 0.6s ease; padding-bottom: 100px; }
-  .fidelity-card {
-    background: var(--purple); border-radius: 24px; padding: 24px;
-    box-shadow: 0 16px 48px rgba(74,29,98,0.35); position: relative; overflow: hidden; margin-bottom: 16px;
-  }
-  .card-client-name { font-family: 'Playfair Display', serif; font-size: 22px; color: white; font-weight: 700; }
-  .slots-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 20px 0; }
-  .slot { aspect-ratio: 1; background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-  .slot.filled { background: rgba(245,166,35,0.25); border: 2px solid var(--gold); }
+  #cardScreen { width: 100%; max-width: 460px; display: none; padding-bottom: 100px; }
+  .fidelity-card { background: var(--purple); border-radius: 24px; padding: 24px; box-shadow: 0 16px 48px rgba(74,29,98,0.3); }
+  .card-client-name { font-family: 'Playfair Display', serif; font-size: 22px; color: white; font-weight: 700; margin-bottom: 15px; }
+  .slots-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .slot { aspect-ratio: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .slot.filled { background: rgba(245,166,35,0.2); border: 2px solid var(--gold); }
+
+  /* BOTTOM NAV */
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; border-top: 1px solid #eee; z-index: 100; }
+  .bottom-nav-item { flex: 1; padding: 12px; text-align: center; border: none; background: none; cursor: pointer; }
+  .bottom-nav-item .nav-icon { display: block; font-size: 20px; }
+  .bottom-nav-item .nav-label { font-size: 10px; color: #888; font-weight: 600; }
+  .bottom-nav-item.active .nav-label { color: var(--purple); }
 
   .hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<div id="fornadaHeaderBar" style="display:none; width: 100%; position:sticky; top:0; z-index:100;">
+<div id="fornadaHeaderBar" style="display:none; width: 100%; position:sticky; top:0; z-index:1000;">
   <div class="fornada-header">
     <div class="fornada-header-text">
       <span class="fornada-pulse"></span>
-      <span id="fornadaMsgClient">Em breve nova fornada — fique ligado! 🫓</span>
+      <span>Fornada saindo agora! Peça a sua 🫓</span>
     </div>
   </div>
 </div>
@@ -193,31 +100,33 @@
     <h1 class="brand-name">Empa<span>dinhas</span></h1>
   </div>
   <div class="register-card">
-    <h2>Seja bem-vindo!</h2>
-    <p>Cadastre-se para ganhar pontos fidelidade e fazer seus pedidos.</p>
+    <h2 style="color:var(--purple-dark); margin-bottom: 8px;">Olá!</h2>
+    <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Cadastre-se para acumular selos e ganhar brindes.</p>
     <div class="field">
-      <label>Seu Nome</label>
-      <input type="text" id="regName" placeholder="Ex: Maria Silva">
+      <label>SEU NOME</label>
+      <input type="text" id="regName" placeholder="Como quer ser chamado?">
     </div>
     <div class="field">
-      <label>Seu WhatsApp</label>
+      <label>WHATSAPP</label>
       <input type="tel" id="regPhone" placeholder="(00) 00000-0000">
     </div>
-    <button class="btn-register" onclick="doRegister()">COMEÇAR AGORA</button>
+    <button class="btn-register" onclick="doRegister()">CRIAR MEU CARTÃO</button>
   </div>
 </div>
 
 <div id="cardapioScreen" class="hidden">
-  <div class="cardapio-section-title">🫓 Empadas do dia</div>
+  <div class="cardapio-section-title">Nossas Delícias</div>
   <div class="empada-grid" id="empadaGrid">
-    </div>
+    <div class="empada-card"><span class="empada-emoji">🫓</span><div class="empada-nome">Frango</div><span class="empada-preco">R$ 8,00</span></div>
+    <div class="empada-card"><span class="empada-emoji">🧀</span><div class="empada-nome">Queijo</div><span class="empada-preco">R$ 8,00</span></div>
+  </div>
 </div>
 
 <div id="cardScreen">
   <div class="fidelity-card">
     <div class="card-client-name" id="displayClientName">Cliente</div>
     <div class="slots-grid" id="slotsGrid"></div>
-    <div style="color: white; font-size: 12px; opacity: 0.8; text-align: center;">Complete 10 selos e ganhe uma empada grátis!</div>
+    <p style="color:white; font-size:11px; text-align:center; margin-top:20px; opacity:0.8;">A cada 10 empadas, a 11ª é por nossa conta!</p>
   </div>
 </div>
 
@@ -235,25 +144,18 @@
 <script>
   let currentUser = null;
 
-  // FUNÇÃO DE REGISTRO CORRIGIDA
   function doRegister() {
     const name = document.getElementById('regName').value.trim();
     const phone = document.getElementById('regPhone').value.trim();
 
     if(!name || !phone) {
-      alert("Por favor, preencha nome e telefone.");
+      alert("Preencha os campos para continuar!");
       return;
     }
 
-    currentUser = {
-      name: name,
-      phone: phone,
-      stamps: 0
-    };
-
+    currentUser = { name, phone, stamps: 0 };
     localStorage.setItem('empadinhas_user', JSON.stringify(currentUser));
     
-    // Transição visual
     document.getElementById('registerScreen').style.display = 'none';
     document.getElementById('bottomNav').style.display = 'flex';
     document.getElementById('fornadaHeaderBar').style.display = 'block';
@@ -262,11 +164,9 @@
     renderFidelityCard();
   }
 
-  // NAVEGAÇÃO ENTRE ABAS
   function showClientTab(tab) {
     const cardapio = document.getElementById('cardapioScreen');
     const fidelidade = document.getElementById('cardScreen');
-    
     document.querySelectorAll('.bottom-nav-item').forEach(el => el.classList.remove('active'));
     
     if(tab === 'cardapio') {
@@ -294,7 +194,6 @@
     }
   }
 
-  // Ao carregar a página
   window.onload = () => {
     const saved = localStorage.getItem('empadinhas_user');
     if(saved) {
