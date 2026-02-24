@@ -823,6 +823,7 @@
   const db = getDatabase(app);
 
   let currentClientId = null;
+  let currentClientName = '';
   let unsubscribe = null;
 
   const MESSAGES = [
@@ -1032,8 +1033,7 @@
   let cardapioSabores = {};
   let cardapioCombos = {};
   let cart = {}; // { id: { type:'sabor'|'combo', name, price, emoji, qty } }
-  let currentClientName = '';
-  let currentClientId = '';
+  // currentClientId já declarado acima — variáveis compartilhadas
 
   function initCardapio() {
     // Ouvir mensagem da fornada
