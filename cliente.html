@@ -849,12 +849,22 @@
     document.getElementById('registerScreen').style.display = 'block';
     document.getElementById('lookupScreen').style.display = 'none';
     document.getElementById('cardScreen').style.display = 'none';
+    document.getElementById('cardapioScreen').classList.add('hidden');
+    document.getElementById('fornadaHeaderBar').style.display = 'none';
+    document.getElementById('bottomNav').style.display = 'none';
+    const cartBar = document.getElementById('cartBar');
+    if (cartBar) cartBar.classList.add('hidden');
   };
 
   window.showLookup = () => {
     document.getElementById('registerScreen').style.display = 'none';
     document.getElementById('lookupScreen').style.display = 'block';
     document.getElementById('cardScreen').style.display = 'none';
+    document.getElementById('cardapioScreen').classList.add('hidden');
+    document.getElementById('fornadaHeaderBar').style.display = 'none';
+    document.getElementById('bottomNav').style.display = 'none';
+    const cartBar = document.getElementById('cartBar');
+    if (cartBar) cartBar.classList.add('hidden');
   };
 
   // showCard original substituída — nova versão está no bloco do cardápio acima
@@ -1208,6 +1218,7 @@
   }
   window.showClientTab = showClientTab;
 
+  let cardapioIniciado = false;
   function showCard() {
     document.getElementById('registerScreen').style.display = 'none';
     document.getElementById('lookupScreen').style.display = 'none';
@@ -1215,8 +1226,8 @@
     document.getElementById('bottomNav').style.display = 'flex';
     document.getElementById('cardapioScreen').classList.remove('hidden');
     document.getElementById('cardScreen').style.display = 'block';
-    showClientTab('cardapio'); // começa no cardápio
-    initCardapio();
+    showClientTab('cardapio');
+    if (!cardapioIniciado) { initCardapio(); cardapioIniciado = true; }
   }
 
   const FLAVOR_TIPS = [
