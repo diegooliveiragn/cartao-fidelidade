@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EmpaDinhas — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --purple:#6B2D8B;--purple-dark:#4a1d62;--gold:#F5A623;--gold-dark:#C8861A;
+  --cream:#FFF8EE;--red:#e53935;--green:#43a047;--gray:#888;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:#222;min-height:100vh;}
+
+/* LOGIN */
+#loginScreen{min-height:100vh;background:var(--purple-dark);display:flex;align-items:center;justify-content:center;padding:24px;}
+.login-box{background:white;border-radius:24px;padding:40px 32px;width:100%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.login-logo{font-family:'Playfair Display',serif;font-size:32px;color:var(--purple);margin-bottom:4px;}
+.login-logo span{color:var(--gold);font-style:italic;}
+.login-stars{color:var(--gold);font-size:18px;margin-bottom:8px;letter-spacing:4px;}
+.login-sub{font-size:13px;color:var(--gray);margin-bottom:28px;letter-spacing:1px;text-transform:uppercase;}
+.login-box input{width:100%;padding:14px 18px;border:2px solid #e0d5f0;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;margin-bottom:14px;outline:none;transition:border-color .2s;}
+.login-box input:focus{border-color:var(--purple);}
+.btn-login{width:100%;padding:14px;background:var(--purple);color:white;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:background .2s;}
+.btn-login:hover{background:var(--purple-dark);}
+.login-err{color:var(--red);font-size:13px;margin-top:10px;}
+
+/* HEADER */
+header{background:var(--purple-dark);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.2);}
+.header-logo{font-family:'Playfair Display',serif;color:var(--gold);font-size:19px;font-weight:900;}
+.header-logo span{color:white;font-style:italic;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.badge{background:var(--gold);color:var(--purple-dark);font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:1px;}
+.btn-logout{background:transparent;border:2px solid rgba(255,255,255,.3);color:white;border-radius:10px;padding:7px 13px;font-size:13px;cursor:pointer;transition:all .2s;}
+.btn-logout:hover{border-color:white;}
+
+/* TABS */
+.tabs{background:white;border-bottom:2px solid #f0e8ff;display:flex;overflow-x:auto;position:sticky;top:57px;z-index:99;}
+.tab{padding:14px 20px;font-size:13px;font-weight:600;color:var(--gray);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s;}
+.tab.active{color:var(--purple);border-bottom-color:var(--purple);}
+.tab:hover{color:var(--purple);}
+
+.container{max-width:560px;margin:0 auto;padding:20px 16px;}
+.container-wide{max-width:900px;margin:0 auto;padding:20px 16px;}
+
+/* STATS CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+.stat-card{background:white;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+.stat-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--purple);}
+.stat-label{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+.stat-sub{font-size:12px;color:var(--gold-dark);margin-top:4px;font-weight:500;}
+
+/* ALERTS */
+.alert-box{background:#fff3cd;border:2px solid var(--gold);border-radius:14px;padding:14px 16px;margin-bottom:16px;}
+.alert-box.red{background:#fff0f0;border-color:var(--red);}
+.alert-title{font-weight:700;font-size:13px;color:var(--gold-dark);margin-bottom:8px;}
+.alert-box.red .alert-title{color:var(--red);}
+.alert-item{font-size:13px;color:#555;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.05);}
+.alert-item:last-child{border-bottom:none;}
+
+/* CHARTS */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.chart-card{background:white;border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+.chart-card.full{grid-column:1/-1;}
+.chart-title{font-family:'Playfair Display',serif;font-size:15px;color:var(--purple-dark);margin-bottom:14px;font-weight:700;}
+canvas{max-height:200px;}
+
+/* SEARCH & LIST */
+.search-bar{display:flex;gap:10px;margin-bottom:16px;}
+.search-bar input{flex:1;padding:13px 16px;border:2px solid #ddd;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;outline:none;background:white;transition:border-color .2s;}
+.search-bar input:focus{border-color:var(--purple);}
+.btn-purple{background:var(--purple);color:white;border:none;border-radius:14px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;white-space:nowrap;transition:background .2s;}
+.btn-purple:hover{background:var(--purple-dark);}
+.btn-gold{background:var(--gold);color:white;border:none;border-radius:14px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;white-space:nowrap;transition:background .2s;}
+.btn-gold:hover{background:var(--gold-dark);}
+
+.section-title{font-family:'Playfair Display',serif;font-size:17px;color:var(--purple-dark);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+.count-badge{background:var(--gold);color:var(--purple-dark);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;}
+
+/* CLIENT CARD */
+.client-card{background:white;border-radius:16px;padding:16px;margin-bottom:10px;box-shadow:0 3px 14px rgba(0,0,0,.07);border:2px solid transparent;transition:transform .2s,box-shadow .2s;}
+.client-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.11);}
+.client-card.winner{border-color:var(--gold);background:linear-gradient(135deg,#fff9ee,white);}
+.client-card.pending{border-color:var(--red);background:linear-gradient(135deg,#fff5f5,white);}
+.client-card.inactive{border-color:#ddd;opacity:.8;}
+.client-card.birthday{border-color:#e91e8c;background:linear-gradient(135deg,#fff0f8,white);}
+
+.card-header{display:flex;align-items:center;gap:11px;margin-bottom:12px;}
+.avatar{width:42px;height:42px;background:var(--purple);border-radius:11px;display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:'Playfair Display',serif;font-size:17px;font-weight:700;flex-shrink:0;}
+.client-info{flex:1;min-width:0;}
+.client-name{font-weight:600;font-size:15px;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.client-meta{font-size:12px;color:var(--gray);margin-top:2px;}
+
+.tag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.5px;flex-shrink:0;}
+.tag-winner{background:var(--gold);color:white;animation:pulse 1.5s ease-in-out infinite;}
+.tag-pending{background:var(--red);color:white;animation:pulse 1.5s ease-in-out infinite;}
+.tag-inactive{background:#aaa;color:white;}
+.tag-birthday{background:#e91e8c;color:white;animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(1.03)}}
+
+.slots{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:12px;}
+.slot{aspect-ratio:1;border-radius:9px;border:2px dashed #ddd;display:flex;align-items:center;justify-content:center;font-size:16px;background:#fafafa;transition:all .3s;}
+.slot.filled{background:#f5edff;border:2px solid var(--purple);}
+.slot.filled.gold{background:var(--gold);border:2px solid #fff;box-shadow:0 0 12px rgba(245,166,35,.5);}
+
+.card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.progress-text{font-size:13px;color:var(--purple);font-weight:600;}
+.card-actions{display:flex;gap:7px;flex-wrap:wrap;}
+
+.btn-stamp{background:var(--purple);color:white;border:none;border-radius:9px;padding:7px 13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s,transform .1s;}
+.btn-stamp:hover{background:var(--purple-dark);}
+.btn-stamp:active{transform:scale(.95);}
+.btn-confirm{background:var(--green);color:white;border:none;border-radius:9px;padding:7px 13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;}
+.btn-confirm:hover{background:#2e7d32;}
+.btn-remove{background:transparent;border:2px solid #eee;color:#bbb;border-radius:9px;padding:7px 9px;font-size:12px;cursor:pointer;transition:all .2s;}
+.btn-remove:hover{border-color:var(--red);color:var(--red);}
+
+.quest-box{background:#fff3f3;border:2px solid var(--red);border-radius:10px;padding:9px 13px;margin-bottom:9px;font-size:13px;color:var(--red);font-weight:600;}
+.inactive-box{background:#f5f5f5;border-radius:10px;padding:9px 13px;margin-bottom:9px;font-size:12px;color:#888;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(74,29,98,.6);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.active{display:flex;}
+.modal{background:white;border-radius:22px;padding:28px 24px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:slideUp .3s ease;max-height:90vh;overflow-y:auto;}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal h2{font-family:'Playfair Display',serif;font-size:20px;color:var(--purple-dark);margin-bottom:18px;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--purple);margin-bottom:4px;}
+.field input,.field select{width:100%;padding:11px 14px;border:2px solid #e0d5f0;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:14px;color:#222;outline:none;transition:border-color .2s;background:white;}
+.field input:focus,.field select:focus{border-color:var(--purple);}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.modal-actions{display:flex;gap:10px;margin-top:18px;}
+.btn-cancel{flex:1;padding:11px;border:2px solid #e0d5f0;border-radius:11px;background:transparent;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--purple);cursor:pointer;transition:background .2s;}
+.btn-cancel:hover{background:#f5edff;}
+.btn-save{flex:2;padding:11px;border:none;border-radius:11px;background:var(--purple);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:white;cursor:pointer;transition:background .2s;}
+.btn-save:hover{background:var(--purple-dark);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--purple-dark);color:white;padding:13px 22px;border-radius:13px;font-size:14px;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,.2);z-index:999;transition:transform .3s ease;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.gold{background:var(--gold-dark);}
+
+.empty-state{text-align:center;padding:50px 20px;color:var(--purple);opacity:.4;}
+.empty-state .icon{font-size:48px;margin-bottom:12px;}
+
+/* EXPORT BTN */
+.export-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+
+@media(max-width:480px){
+  .charts-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Empa<span>Dinhas</span></div>
+    <div class="login-stars">★★★★</div>
+    <div class="login-sub">Painel Administrativo</div>
+    <input type="password" id="loginInput" placeholder="Digite a senha..." onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen" style="display:none">
+  <header>
+    <div class="header-logo">Empa<span>Dinhas</span></div>
+    <div class="header-right">
+      <span class="badge">ADMIN</span>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('dashboard')">📊 Dashboard</div>
+    <div class="tab" onclick="showTab('clientes')">👥 Clientes</div>
+    <div class="tab" onclick="showTab('alertas')">🔔 Alertas</div>
+  </div>
+
+  <!-- DASHBOARD TAB -->
+  <div id="tab-dashboard" class="container-wide">
+    <br>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num" id="dTotal">0</div><div class="stat-label">Total de Clientes</div></div>
+      <div class="stat-card"><div class="stat-num" id="dAtivos">0</div><div class="stat-label">Ativos (últimos 30d)</div></div>
+      <div class="stat-card"><div class="stat-num" id="dWinners">0</div><div class="stat-label">🎁 Empadas Grátis</div><div class="stat-sub" id="dWinnersTotal"></div></div>
+      <div class="stat-card"><div class="stat-num" id="dInativo">0</div><div class="stat-label">⚠️ Inativos</div><div class="stat-sub">+30 dias sem compra</div></div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Clientes por Gênero</div>
+        <canvas id="chartGenero"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Como Conheceram</div>
+        <canvas id="chartConheceu"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Top Bairros</div>
+        <canvas id="chartBairro"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Sabores Favoritos</div>
+        <canvas id="chartSabor"></canvas>
+      </div>
+      <div class="chart-card full">
+        <div class="chart-title">Novos Clientes por Mês</div>
+        <canvas id="chartMes"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENTES TAB -->
+  <div id="tab-clientes" class="container" style="display:none">
+    <br>
+    <div class="export-bar">
+      <button class="btn-gold" onclick="exportCSV()">⬇️ Exportar CSV</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Buscar por nome ou telefone..." oninput="renderList()">
+      <button class="btn-purple" onclick="openAddModal()">+ Novo</button>
+    </div>
+    <div class="section-title">Clientes <span class="count-badge" id="countBadge">0</span></div>
+    <div id="clientList"></div>
+  </div>
+
+  <!-- ALERTAS TAB -->
+  <div id="tab-alertas" class="container" style="display:none">
+    <br>
+    <div class="section-title">🎂 Aniversariantes do Mês</div>
+    <div id="birthdayList"></div>
+    <br>
+    <div class="section-title">⚠️ Clientes Inativos</div>
+    <div id="inactiveList"></div>
+    <br>
+    <div class="section-title">🎁 Aguardando Entrega</div>
+    <div id="pendingList"></div>
+  </div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <h2 id="modalTitle">Novo Cliente</h2>
+    <div class="field"><label>Nome completo *</label><input type="text" id="iName" placeholder="Maria Silva"></div>
+    <div class="field-row">
+      <div class="field"><label>Telefone *</label><input type="tel" id="iPhone" placeholder="(85) 99999-0000"></div>
+      <div class="field"><label>Gênero</label>
+        <select id="iGender">
+          <option value="">Selecione</option>
+          <option value="Feminino">Feminino</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Outro">Outro</option>
+          <option value="Prefiro não dizer">Prefiro não dizer</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Data de Nascimento</label><input type="date" id="iBirth"></div>
+      <div class="field"><label>Email</label><input type="email" id="iEmail" placeholder="email@exemplo.com"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Cidade</label><input type="text" id="iCity" placeholder="Fortaleza"></div>
+      <div class="field"><label>Bairro</label><input type="text" id="iNeighborhood" placeholder="Aldeota"></div>
+    </div>
+    <div class="field"><label>Rua</label><input type="text" id="iStreet" placeholder="Rua das Flores, 123"></div>
+    <div class="field"><label>Como conheceu a Empadinhas</label>
+      <select id="iSource">
+        <option value="">Selecione</option>
+        <option value="Instagram">Instagram</option>
+        <option value="Indicação">Indicação de amigo(a)</option>
+        <option value="Passou na rua">Passou na rua</option>
+        <option value="WhatsApp">WhatsApp</option>
+        <option value="Delivery">Delivery (iFood/Rappi)</option>
+        <option value="Outro">Outro</option>
+      </select>
+    </div>
+    <div class="field"><label>Sabor Favorito</label>
+      <select id="iFlavor">
+        <option value="">Selecione</option>
+        <option value="Frango com catupiry">Frango com catupiry</option>
+        <option value="Frango">Frango</option>
+        <option value="Frango com bacon">Frango com bacon</option>
+        <option value="Frango com milho">Frango com milho</option>
+        <option value="Frango com azeitona">Frango com azeitona</option>
+        <option value="Vários">Vários / não tenho favorito</option>
+      </select>
+    </div>
+    <div class="field"><label>Qtd habitual por compra</label>
+      <select id="iQty">
+        <option value="">Selecione</option>
+        <option value="1">1 empada</option>
+        <option value="2">2 empadas</option>
+        <option value="3-5">3 a 5 empadas</option>
+        <option value="6+">6 ou mais</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('addModal')">Cancelar</button>
+      <button class="btn-save" onclick="saveClient()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <h2 id="confirmTitle"></h2>
+    <p style="color:#555;font-size:15px;margin-bottom:6px" id="confirmText"></p>
+    <p style="font-weight:700;font-size:17px;color:#222;margin-bottom:4px" id="confirmName"></p>
+    <p style="font-size:13px;color:#888" id="confirmSub"></p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('confirmModal')">Cancelar</button>
+      <button class="btn-save" id="confirmBtn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, update, remove, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey:"AIzaSyC8gdXtQTfomf9yS0Up3WAYRREq-4DS0H8",
+  authDomain:"empadinhas-fidelidade-7d820.firebaseapp.com",
+  databaseURL:"https://empadinhas-fidelidade-7d820-default-rtdb.firebaseio.com",
+  projectId:"empadinhas-fidelidade-7d820",
+  storageBucket:"empadinhas-fidelidade-7d820.firebasestorage.app",
+  messagingSenderId:"811456405708",
+  appId:"1:811456405708:web:cb386316ef46ba8441e269"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const ADMIN_PASS = "empadinhas2025";
+let clients = {};
+let charts = {};
+
+window.doLogin = () => {
+  if(document.getElementById('loginInput').value === ADMIN_PASS){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appScreen').style.display='block';
+    startListening();
+  } else {
+    document.getElementById('loginErr').textContent='Senha incorreta.';
+  }
+};
+window.doLogout = () => {
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('loginInput').value='';
+};
+
+function startListening(){
+  onValue(ref(db,'clients'), snap => {
+    clients = snap.val() || {};
+    renderAll();
+  });
+}
+
+function renderAll(){
+  updateDashboard();
+  renderList();
+  renderAlerts();
+}
+
+// TABS
+window.showTab = (tab) => {
+  ['dashboard','clientes','alertas'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? '' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((el,i) => {
+    el.classList.toggle('active', ['dashboard','clientes','alertas'][i]===tab);
+  });
+  if(tab==='dashboard') updateDashboard();
+};
+
+// DASHBOARD
+function updateDashboard(){
+  const all = Object.values(clients);
+  const now = Date.now();
+  const DAY30 = 30*24*60*60*1000;
+  const ativos = all.filter(c => c.lastStampAt && (now - c.lastStampAt) < DAY30).length;
+  const inativos = all.filter(c => c.lastStampAt && (now - c.lastStampAt) >= DAY30).length;
+  const winners = all.filter(c => c.stamps >= 10).length;
+  const totalRedeemed = all.reduce((s,c) => s + (c.totalRedeemed||0), 0);
+
+  document.getElementById('dTotal').textContent = all.length;
+  document.getElementById('dAtivos').textContent = ativos;
+  document.getElementById('dWinners').textContent = winners;
+  document.getElementById('dWinnersTotal').textContent = `${totalRedeemed} empadas resgatadas no total`;
+  document.getElementById('dInativo').textContent = inativos;
+
+  buildCharts(all);
+}
+
+function buildCharts(all){
+  // Genero
+  const genCount = {};
+  all.forEach(c => { const g = c.gender||'Não informado'; genCount[g]=(genCount[g]||0)+1; });
+  buildPie('chartGenero', genCount);
+
+  // Como conheceu
+  const srcCount = {};
+  all.forEach(c => { const s = c.source||'Não informado'; srcCount[s]=(srcCount[s]||0)+1; });
+  buildPie('chartConheceu', srcCount);
+
+  // Bairro top 6
+  const bCount = {};
+  all.forEach(c => { if(c.neighborhood){ const b=c.neighborhood; bCount[b]=(bCount[b]||0)+1; } });
+  const top = Object.entries(bCount).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  buildBar('chartBairro', Object.fromEntries(top));
+
+  // Sabor
+  const fCount = {};
+  all.forEach(c => { if(c.flavor){ const f=c.flavor; fCount[f]=(fCount[f]||0)+1; } });
+  buildBar('chartSabor', fCount);
+
+  // Clientes por mês
+  const mCount = {};
+  const monthNames = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  all.forEach(c => {
+    if(c.createdAt){
+      const d = new Date(c.createdAt);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      mCount[key] = (mCount[key]||0)+1;
+    }
+  });
+  const sorted = Object.entries(mCount).sort((a,b)=>a[0].localeCompare(b[0])).slice(-8);
+  const labels = sorted.map(([k]) => { const [y,m]=k.split('-'); return monthNames[+m-1]+'/'+y.slice(2); });
+  const data = sorted.map(([,v])=>v);
+  buildLine('chartMes', labels, data);
+}
+
+const COLORS = ['#6B2D8B','#F5A623','#43a047','#e53935','#1976d2','#e91e8c','#ff6f00','#00838f'];
+
+function buildPie(id, dataObj){
+  const ctx = document.getElementById(id);
+  if(!ctx) return;
+  if(charts[id]) charts[id].destroy();
+  const labels = Object.keys(dataObj);
+  const data = Object.values(dataObj);
+  charts[id] = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:COLORS, borderWidth:2, borderColor:'white' }] },
+    options:{ plugins:{ legend:{ position:'bottom', labels:{ font:{size:11}, boxWidth:12 } } }, cutout:'60%' }
+  });
+}
+
+function buildBar(id, dataObj){
+  const ctx = document.getElementById(id);
+  if(!ctx) return;
+  if(charts[id]) charts[id].destroy();
+  charts[id] = new Chart(ctx, {
+    type:'bar',
+    data:{ labels:Object.keys(dataObj), datasets:[{ data:Object.values(dataObj), backgroundColor:COLORS, borderRadius:6 }] },
+    options:{ plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true, ticks:{stepSize:1} } }, indexAxis:'y' }
+  });
+}
+
+function buildLine(id, labels, data){
+  const ctx = document.getElementById(id);
+  if(!ctx) return;
+  if(charts[id]) charts[id].destroy();
+  charts[id] = new Chart(ctx, {
+    type:'line',
+    data:{ labels, datasets:[{ data, borderColor:'#6B2D8B', backgroundColor:'rgba(107,45,139,.1)', fill:true, tension:.4, pointBackgroundColor:'#6B2D8B', pointRadius:5 }] },
+    options:{ plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true, ticks:{stepSize:1} } } }
+  });
+}
+
+// ALERTS
+function renderAlerts(){
+  const now = Date.now();
+  const DAY30 = 30*24*60*60*1000;
+  const curMonth = new Date().getMonth()+1;
+
+  // Aniversariantes
+  const bdays = Object.entries(clients).filter(([,c]) => {
+    if(!c.birthdate) return false;
+    const m = parseInt(c.birthdate.split('-')[1]);
+    return m === curMonth;
+  });
+  const bdList = document.getElementById('birthdayList');
+  if(bdays.length === 0){
+    bdList.innerHTML = '<div class="empty-state" style="padding:20px"><div class="icon">🎂</div><p>Nenhum aniversariante este mês.</p></div>';
+  } else {
+    bdList.innerHTML = bdays.map(([id,c]) => {
+      const day = c.birthdate.split('-')[2];
+      return `<div class="alert-box"><div class="alert-title">🎂 Dia ${day} — ${c.name}</div><div class="alert-item">📱 ${c.phone||'—'} · ${c.neighborhood||'—'}</div></div>`;
+    }).join('');
+  }
+
+  // Inativos
+  const inactive = Object.entries(clients).filter(([,c]) => c.lastStampAt && (now - c.lastStampAt) >= DAY30 && !c.pendingDelivery && c.stamps < 10);
+  const inList = document.getElementById('inactiveList');
+  if(inactive.length === 0){
+    inList.innerHTML = '<div class="empty-state" style="padding:20px"><div class="icon">✅</div><p>Nenhum cliente inativo!</p></div>';
+  } else {
+    inList.innerHTML = inactive.map(([id,c]) => {
+      const days = Math.floor((now - c.lastStampAt)/86400000);
+      return `<div class="alert-box red"><div class="alert-title">⚠️ ${c.name} — ${days} dias sem comprar</div><div class="alert-item">📱 ${c.phone||'—'} · ${c.stamps}/10 selos</div></div>`;
+    }).join('');
+  }
+
+  // Pendentes
+  const pending = Object.entries(clients).filter(([,c]) => c.pendingDelivery);
+  const pList = document.getElementById('pendingList');
+  if(pending.length === 0){
+    pList.innerHTML = '<div class="empty-state" style="padding:20px"><div class="icon">🎁</div><p>Nenhuma entrega pendente.</p></div>';
+  } else {
+    pList.innerHTML = pending.map(([id,c]) => `
+      <div class="alert-box">
+        <div class="alert-title">🎁 ${c.name}</div>
+        <div class="alert-item">📱 ${c.phone||'—'}</div>
+        <button class="btn-confirm" style="margin-top:8px;width:100%" onclick="confirmDelivery('${id}')">✅ Confirmar entrega</button>
+      </div>`).join('');
+  }
+}
+
+// RENDER LIST
+window.renderList = () => {
+  const q = (document.getElementById('searchInput')?.value||'').toLowerCase();
+  const now = Date.now();
+  const DAY30 = 30*24*60*60*1000;
+
+  let filtered = Object.entries(clients).filter(([,c]) =>
+    (c.name||'').toLowerCase().includes(q)||(c.phone||'').includes(q)
+  );
+
+  filtered.sort(([,a],[,b])=>{
+    if(a.pendingDelivery && !b.pendingDelivery) return -1;
+    if(!a.pendingDelivery && b.pendingDelivery) return 1;
+    if(a.stamps>=10 && b.stamps<10) return -1;
+    if(a.stamps<10 && b.stamps>=10) return 1;
+    return (a.name||'').localeCompare(b.name||'');
+  });
+
+  document.getElementById('countBadge').textContent = Object.keys(clients).length;
+  const list = document.getElementById('clientList');
+
+  if(!filtered.length){
+    list.innerHTML = `<div class="empty-state"><div class="icon">🫓</div><p>${!Object.keys(clients).length?'Nenhum cliente ainda!':'Nenhum resultado.'}</p></div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(([id,c])=>{
+    const stamps = c.stamps||0;
+    const isWinner = stamps>=10;
+    const isPending = c.pendingDelivery;
+    const isInactive = c.lastStampAt && (now-c.lastStampAt)>=DAY30 && !isWinner && !isPending;
+    const isBirthday = c.birthdate && parseInt(c.birthdate.split('-')[1]) === (new Date().getMonth()+1);
+    const initial = (c.name||'?').charAt(0).toUpperCase();
+
+    const slots = Array.from({length:10},(_,i)=>{
+      const filled = i<stamps;
+      const golden = isWinner&&filled;
+      return `<div class="slot ${filled?'filled':''} ${golden?'gold':''}">${filled?(golden?'🌟':'🟣'):''}</div>`;
+    }).join('');
+
+    let tag = '';
+    if(isPending) tag=`<span class="tag tag-pending">🍟 ENTREGAR</span>`;
+    else if(isWinner) tag=`<span class="tag tag-winner">🎁 GRÁTIS</span>`;
+    else if(isBirthday) tag=`<span class="tag tag-birthday">🎂 ANIV.</span>`;
+    else if(isInactive) tag=`<span class="tag tag-inactive">💤 INATIVO</span>`;
+
+    let extra = '';
+    if(isPending) extra=`<div class="quest-box">⚠️ A 11ª empada foi entregue para ${c.name}?</div>`;
+    else if(isInactive){
+      const days=Math.floor((now-c.lastStampAt)/86400000);
+      extra=`<div class="inactive-box">💤 ${days} dias sem comprar — que tal mandar um oi?</div>`;
+    }
+
+    let actions='';
+    if(isPending) actions=`<button class="btn-confirm" onclick="confirmDelivery('${id}')">✅ Entregue</button><button class="btn-remove" onclick="deleteClient('${id}')">🗑</button>`;
+    else if(isWinner) actions=`<button class="btn-confirm" onclick="markPending('${id}')">🎁 Entregar</button><button class="btn-remove" onclick="deleteClient('${id}')">🗑</button>`;
+    else actions=`<button class="btn-stamp" onclick="addStamp('${id}')">+ Carimbo</button><button class="btn-remove" onclick="deleteClient('${id}')">🗑</button>`;
+
+    const flavorInfo = c.flavor ? `· ❤️ ${c.flavor}` : '';
+    const qtyInfo = c.qty ? `· 🫓 ${c.qty}/compra` : '';
+
+    return `<div class="client-card ${isPending?'pending':isWinner?'winner':isBirthday?'birthday':isInactive?'inactive':''}">
+      <div class="card-header">
+        <div class="avatar">${initial}</div>
+        <div class="client-info">
+          <div class="client-name">${c.name}</div>
+          <div class="client-meta">${c.phone||''} ${c.neighborhood?'· '+c.neighborhood:''} ${flavorInfo} ${qtyInfo}</div>
+        </div>
+        ${tag}
+      </div>
+      ${extra}
+      <div class="slots">${slots}</div>
+      <div class="card-footer">
+        <span class="progress-text">${stamps}/10 selos · ${c.totalRedeemed||0} resgatadas</span>
+        <div class="card-actions">${actions}</div>
+      </div>
+    </div>`;
+  }).join('');
+};
+
+// ACTIONS
+window.addStamp = async (id) => {
+  const c = clients[id]; if(!c) return;
+  const newStamps = Math.min((c.stamps||0)+1, 10);
+  await update(ref(db,`clients/${id}`), { stamps:newStamps, lastStampAt:Date.now() });
+  showToast(newStamps===10?`🎉 ${c.name} completou o cartão!`:`+1 selo para ${c.name} (${newStamps}/10)`, newStamps===10);
+};
+
+window.markPending = (id) => {
+  const c = clients[id];
+  document.getElementById('confirmTitle').textContent='🎁 Entregar Empada Grátis';
+  document.getElementById('confirmText').textContent='Confirmar entrega da empada grátis para:';
+  document.getElementById('confirmName').textContent=c.name;
+  document.getElementById('confirmSub').textContent='O cartão ficará bloqueado até confirmar.';
+  document.getElementById('confirmBtn').onclick = async () => {
+    await update(ref(db,`clients/${id}`), { pendingDelivery:true });
+    closeModal('confirmModal');
+    showToast(`Empada grátis marcada para ${c.name}!`, true);
+  };
+  document.getElementById('confirmModal').classList.add('active');
+};
+
+window.confirmDelivery = (id) => {
+  const c = clients[id];
+  document.getElementById('confirmTitle').textContent='✅ Confirmar Entrega';
+  document.getElementById('confirmText').textContent='A empada grátis foi entregue para:';
+  document.getElementById('confirmName').textContent=c.name;
+  document.getElementById('confirmSub').textContent='O cartão será zerado e um novo ciclo começa!';
+  document.getElementById('confirmBtn').style.background='';
+  document.getElementById('confirmBtn').onclick = async () => {
+    await update(ref(db,`clients/${id}`), { stamps:0, pendingDelivery:false, lastStampAt:Date.now(), totalRedeemed:(c.totalRedeemed||0)+1 });
+    closeModal('confirmModal');
+    showToast(`Novo cartão iniciado para ${c.name}! 🫓`, true);
+    renderAlerts();
+  };
+  document.getElementById('confirmModal').classList.add('active');
+};
+
+window.deleteClient = (id) => {
+  const c = clients[id];
+  document.getElementById('confirmTitle').textContent='Remover Cliente';
+  document.getElementById('confirmText').textContent='Tem certeza que deseja remover:';
+  document.getElementById('confirmName').textContent=c.name;
+  document.getElementById('confirmSub').textContent='Esta ação não pode ser desfeita.';
+  document.getElementById('confirmBtn').style.background='#e53935';
+  document.getElementById('confirmBtn').onclick = async () => {
+    await remove(ref(db,`clients/${id}`));
+    closeModal('confirmModal');
+    showToast('Cliente removido.');
+    document.getElementById('confirmBtn').style.background='';
+  };
+  document.getElementById('confirmModal').classList.add('active');
+};
+
+window.openAddModal = () => {
+  document.getElementById('modalTitle').textContent='Novo Cliente';
+  ['iName','iPhone','iEmail','iCity','iNeighborhood','iStreet'].forEach(id=>document.getElementById(id).value='');
+  ['iGender','iSource','iFlavor','iQty'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('iBirth').value='';
+  document.getElementById('addModal').classList.add('active');
+  setTimeout(()=>document.getElementById('iName').focus(),100);
+};
+
+window.saveClient = async () => {
+  const name = document.getElementById('iName').value.trim();
+  const phone = document.getElementById('iPhone').value.trim();
+  if(!name){ showToast('Informe o nome do cliente'); return; }
+
+  const newClient = {
+    name, phone,
+    email: document.getElementById('iEmail').value.trim(),
+    gender: document.getElementById('iGender').value,
+    birthdate: document.getElementById('iBirth').value,
+    city: document.getElementById('iCity').value.trim(),
+    neighborhood: document.getElementById('iNeighborhood').value.trim(),
+    street: document.getElementById('iStreet').value.trim(),
+    source: document.getElementById('iSource').value,
+    flavor: document.getElementById('iFlavor').value,
+    qty: document.getElementById('iQty').value,
+    stamps: 0, pendingDelivery: false, totalRedeemed: 0,
+    createdAt: new Date().toISOString(), lastStampAt: Date.now()
+  };
+
+  await push(ref(db,'clients'), newClient);
+  closeModal('addModal');
+  showToast(`${name} cadastrado(a)!`);
+};
+
+// EXPORT CSV
+window.exportCSV = () => {
+  const all = Object.values(clients);
+  if(!all.length){ showToast('Nenhum cliente para exportar'); return; }
+  const headers = ['Nome','Telefone','Email','Gênero','Nascimento','Cidade','Bairro','Rua','Como Conheceu','Sabor Favorito','Qtd/Compra','Selos','Total Resgatadas','Cadastrado em'];
+  const rows = all.map(c=>[
+    c.name||'',c.phone||'',c.email||'',c.gender||'',c.birthdate||'',
+    c.city||'',c.neighborhood||'',c.street||'',c.source||'',c.flavor||'',c.qty||'',
+    c.stamps||0,c.totalRedeemed||0,c.createdAt?new Date(c.createdAt).toLocaleDateString('pt-BR'):''
+  ].map(v=>`"${v}"`).join(','));
+  const csv = [headers.join(','),...rows].join('\n');
+  const blob = new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='empadinhas_clientes.csv'; a.click();
+  showToast('CSV exportado!', true);
+};
+
+window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+
+let toastTimer;
+window.showToast = (msg, gold=false) => {
+  const t = document.getElementById('toast');
+  t.textContent=msg; t.className='toast show'+(gold?' gold':'');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
+};
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter' && document.getElementById('loginScreen').style.display!=='none') doLogin();
+  if(e.key==='Escape'){ closeModal('addModal'); closeModal('confirmModal'); }
+});
+</script>
+</body>
+</html>
